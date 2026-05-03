@@ -9,6 +9,12 @@
   color: #0f172a;
 }
 
+.dark {
+  color-scheme: dark;
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -18,6 +24,11 @@ body {
   min-height: 100vh;
   background: #f8fafc;
   color: #0f172a;
+}
+
+.dark body {
+  background: #0f172a;
+  color: #f8fafc;
 }
 
 #root {
@@ -38,4 +49,9 @@ textarea {
 ::selection {
   background: #cbd5e1;
   color: #0f172a;
+}
+
+.dark ::selection {
+  background: #334155;
+  color: #f8fafc;
 }

@@ -12,10 +12,10 @@ import { ToastContainer } from './components/ui/toast'
 
 function Layout() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="lg:grid lg:grid-cols-[280px_1fr]">
         <Sidebar />
-        <main className="min-h-screen bg-slate-50">
+        <main className="min-h-screen bg-slate-50 dark:bg-slate-900">
           <Topbar />
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <Outlet />
