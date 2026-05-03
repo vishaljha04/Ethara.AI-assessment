@@ -8,7 +8,7 @@ export function DashboardPage() {
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [fetchData])
 
   return (
     <div className="space-y-8">

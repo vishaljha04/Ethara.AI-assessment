@@ -9,23 +9,23 @@ export function AddMemberModal({ open, onClose, onAdd, projectId }) {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const fetchUsers = async () => {
+    setLoading(true)
+    try {
+      const response = await api.get('/users')
+      setUsers(response.data)
+    } catch (err) {
+      console.error('Failed to fetch users:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (open) {
       fetchUsers()
     }
   }, [open])
-
-  const fetchUsers = async () => {
-    setLoading(true)
-    try {
-      const response = await API.get('/users')
-      setUsers(response.data)
-    } catch (error) {
-      console.error('Failed to fetch users')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(search.toLowerCase()) ||

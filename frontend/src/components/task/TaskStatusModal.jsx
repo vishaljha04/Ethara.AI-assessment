@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Dialog } from '../ui/dialog'
 
@@ -10,12 +10,6 @@ const statusOptions = [
 
 export function TaskStatusModal({ task, open, onClose, onSave }) {
   const [status, setStatus] = useState(task?.status || 'todo')
-
-  useEffect(() => {
-    if (task) {
-      setStatus(task.status)
-    }
-  }, [task])
 
   if (!open || !task) return null
 

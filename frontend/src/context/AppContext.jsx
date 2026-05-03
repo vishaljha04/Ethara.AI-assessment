@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import API from '../lib/api'
 import { useAuth } from './AuthContext'
 import { useToast } from './ToastContext'
@@ -12,23 +13,23 @@ export const AppProvider = ({ children }) => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!isAuthenticated) return
     setLoading(true)
     try {
       const [projectRes, taskRes] = await Promise.all([API.get('/projects'), API.get('/tasks')])
       setProjects(projectRes.data)
       setTasks(taskRes.data)
-    } catch (error) {
+    } catch (err) {
       toast.showToast('Unable to load dashboard data', 'error')
     } finally {
       setLoading(false)
     }
-  }
+  }, [isAuthenticated, toast])
 
   useEffect(() => {
     fetchData()
-  }, [isAuthenticated])
+  }, [fetchData])
 
   const createProject = async (projectName) => {
     const response = await API.post('/projects', { name: projectName })
