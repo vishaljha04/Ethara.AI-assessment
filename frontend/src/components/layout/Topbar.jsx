@@ -1,15 +1,20 @@
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import { Button } from '../ui/button'
-import { Moon, Sun, Search } from 'lucide-react'
+import { Menu, Moon, Sun, Search } from 'lucide-react'
 
-export function Topbar() {
+export function Topbar({ onMenuClick }) {
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
 
   return (
     <div className="border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" className="lg:hidden" onClick={onMenuClick} title="Open menu">
+            <Menu size={18} />
+          </Button>
+
         {/* Search Bar */}
         <div className="hidden md:block flex-1 max-w-sm">
           <div className="relative">
@@ -20,6 +25,7 @@ export function Topbar() {
               className="w-full rounded-lg border border-zinc-300 bg-gray-50 py-2 pl-10 pr-4 text-sm text-zinc-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:ring-blue-900"
             />
           </div>
+        </div>
         </div>
 
         {/* Right Side Actions */}
