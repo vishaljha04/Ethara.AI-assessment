@@ -2,17 +2,19 @@ import { useEffect } from 'react'
 import { useApp } from '../context/AppContext'
 import { StatCard } from '../components/dashboard/StatCard'
 import { TaskCard } from '../components/task/TaskCard'
+import { ActivityFeed } from '../components/activity/ActivityFeed'
 import { EmptyState } from '../components/ui/empty-state'
 import { SkeletonCard } from '../components/ui/skeleton'
 import { Card } from '../components/ui/card'
 import { BarChart3, CheckCircle2, AlertCircle, Clock } from 'lucide-react'
 
 export function DashboardPage() {
-  const { stats, tasks, loading, fetchData, updateTaskStatus } = useApp()
+  const { stats, tasks, activities, loading, fetchData, updateTaskStatus, fetchActivities } = useApp()
 
   useEffect(() => {
     fetchData()
-  }, [fetchData])
+    fetchActivities()
+  }, [fetchData, fetchActivities])
 
   const recentTasks = tasks.slice(0, 6)
   const overdueTasks = tasks.filter(t => new Date(t.dueDate) < new Date() && t.status !== 'done')
@@ -89,6 +91,17 @@ export function DashboardPage() {
         )}
       </Card>
 
+      {/* Activity Feed */}
+      <Card className="p-6">
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Activity</h2>
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">What’s happening across your projects</p>
+          </div>
+        </div>
+        <ActivityFeed activities={activities} loading={loading && !activities.length} />
+      </Card>
+
       {/* Overdue Tasks Alert */}
       {overdueTasks.length > 0 && (
         <Card className="border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-900/20">
@@ -101,6 +114,20 @@ export function DashboardPage() {
           </div>
         </Card>
       )}
+
+      {/* Completion Progress */}
+      <Card className="p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Completion</div>
+          <div className="text-sm text-zinc-600 dark:text-zinc-400">{stats.completionPct}%</div>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+          <div className="h-full rounded-full bg-emerald-500" style={{ width: `${stats.completionPct}%` }} />
+        </div>
+        <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+          {stats.completed} of {stats.total} tasks completed
+        </div>
+      </Card>
     </div>
   )
 }

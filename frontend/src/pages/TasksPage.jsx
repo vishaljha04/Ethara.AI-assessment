@@ -4,6 +4,7 @@ import { Card } from '../components/ui/card'
 import { TaskCard } from '../components/task/TaskCard'
 import { TaskModal } from '../components/task/TaskModal'
 import { TaskStatusModal } from '../components/task/TaskStatusModal'
+import { TaskFilters } from '../components/task/TaskFilters'
 import { EmptyState } from '../components/ui/empty-state'
 import { SkeletonCard } from '../components/ui/skeleton'
 import { useApp } from '../context/AppContext'
@@ -11,11 +12,11 @@ import { useAuth } from '../context/AuthContext'
 import { Plus, ListTodo } from 'lucide-react'
 
 export function TasksPage() {
-  const { tasks, projects, loading, createTask, updateTaskStatus } = useApp()
+  const { tasks, projects, loading, createTask, updateTaskStatus, updateTaskPriority, addTaskComment } = useApp()
   const { user } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [filters, setFilters] = useState({ search: '', status: '', priority: '', projectId: '', assignedTo: '' })
 
   const handleStatusOpen = (task) => {
     setSelectedTask(task)
@@ -27,7 +28,14 @@ export function TasksPage() {
     setSelectedTask(null)
   }
 
-  const filteredTasks = statusFilter === 'all' ? tasks : tasks.filter(t => t.status === statusFilter)
+  const filteredTasks = tasks.filter((t) => {
+    if (filters.search && !String(t.title || '').toLowerCase().includes(filters.search.toLowerCase())) return false
+    if (filters.status && t.status !== filters.status) return false
+    if (filters.priority && t.priority !== filters.priority) return false
+    if (filters.projectId && t.projectId?._id !== filters.projectId) return false
+    if (filters.assignedTo && t.assignedTo?._id !== filters.assignedTo) return false
+    return true
+  })
 
   return (
     <div className="space-y-8">
@@ -42,24 +50,12 @@ export function TasksPage() {
             <Plus size={16} className="mr-2" />
             New task
           </Button>
-        )}
+      )}
       </div>
 
       {/* Filters */}
-      <Card className="p-4 flex flex-wrap gap-2">
-        {['all', 'todo', 'in-progress', 'done'].map((filter) => (
-          <button
-            key={filter}
-            onClick={() => setStatusFilter(filter)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-              statusFilter === filter
-                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800'
-            }`}
-          >
-            {filter === 'all' ? 'All Tasks' : filter.replace('-', ' ').charAt(0).toUpperCase() + filter.slice(1).replace('-', ' ')}
-          </button>
-        ))}
+      <Card className="p-6">
+        <TaskFilters value={filters} onChange={setFilters} projects={projects} tasks={tasks} />
       </Card>
 
       {/* Tasks List */}
@@ -84,14 +80,21 @@ export function TasksPage() {
           <EmptyState
             icon={ListTodo}
             title="No tasks found"
-            description={statusFilter === 'all' ? 'Create your first task to get started' : `No ${statusFilter.replace('-', ' ')} tasks`}
-            action={user?.role === 'admin' && statusFilter === 'all' && <Button onClick={() => setIsOpen(true)}>Create task</Button>}
+            description={tasks.length === 0 ? 'Create your first task to get started' : 'Try adjusting your filters'}
+            action={user?.role === 'admin' && tasks.length === 0 && <Button onClick={() => setIsOpen(true)}>Create task</Button>}
           />
         )}
       </Card>
 
       <TaskModal open={isOpen} onClose={() => setIsOpen(false)} onCreate={createTask} projects={projects} />
-      <TaskStatusModal task={selectedTask} open={Boolean(selectedTask)} onClose={() => setSelectedTask(null)} onSave={handleSaveStatus} />
+      <TaskStatusModal
+        task={selectedTask}
+        open={Boolean(selectedTask)}
+        onClose={() => setSelectedTask(null)}
+        onSave={handleSaveStatus}
+        onPrioritySave={(priority) => selectedTask && updateTaskPriority(selectedTask._id, priority)}
+        onAddComment={addTaskComment}
+      />
     </div>
   )
 }

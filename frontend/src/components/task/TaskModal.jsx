@@ -10,8 +10,14 @@ const statusOptions = [
   { value: 'done', label: 'Done' },
 ]
 
+const priorityOptions = [
+  { value: 'high', label: 'High' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'low', label: 'Low' },
+]
+
 export function TaskModal({ open, onClose, onCreate, projects }) {
-  const [values, setValues] = useState({ title: '', description: '', projectId: '', assignedTo: '', dueDate: '', status: 'todo' })
+  const [values, setValues] = useState({ title: '', description: '', projectId: '', assignedTo: '', dueDate: '', status: 'todo', priority: 'medium' })
 
   const availableMembers = useMemo(() => {
     const project = projects.find((project) => project._id === values.projectId)
@@ -21,7 +27,7 @@ export function TaskModal({ open, onClose, onCreate, projects }) {
   const handleSubmit = (event) => {
     event.preventDefault()
     onCreate(values)
-    setValues({ title: '', description: '', projectId: '', assignedTo: '', dueDate: '', status: 'todo' })
+    setValues({ title: '', description: '', projectId: '', assignedTo: '', dueDate: '', status: 'todo', priority: 'medium' })
     onClose()
   }
 
@@ -84,6 +90,13 @@ export function TaskModal({ open, onClose, onCreate, projects }) {
             options={statusOptions}
           />
         </div>
+
+        <Select
+          label="Priority"
+          value={values.priority}
+          onChange={(e) => setValues({ ...values, priority: e.target.value })}
+          options={priorityOptions}
+        />
       </form>
     </Dialog>
   )

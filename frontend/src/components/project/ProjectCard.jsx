@@ -1,5 +1,6 @@
 import { MoreVertical, Users, CheckCircle2 } from 'lucide-react'
 import { Button } from '../ui/button'
+import { Avatar } from '../ui/avatar'
 
 export function ProjectCard({ project, taskCount = 0, onAddMember, isAdmin }) {
   return (
@@ -30,9 +31,7 @@ export function ProjectCard({ project, taskCount = 0, onAddMember, isAdmin }) {
       <div className="mt-6 flex flex-wrap gap-2">
         {project.members?.slice(0, 3).map((member) => (
           <div key={member._id} className="flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-xs dark:bg-zinc-800">
-            <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-              {member.name.charAt(0).toUpperCase()}
-            </div>
+            <Avatar name={member.name} size="sm" className="h-6 w-6 text-[10px]" />
             {member.name}
           </div>
         ))}

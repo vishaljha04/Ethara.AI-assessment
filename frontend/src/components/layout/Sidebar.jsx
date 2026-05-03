@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { BarChart3, FolderKanban, CheckSquare, LogOut } from 'lucide-react'
 import { Button } from '../ui/button'
+import { Avatar } from '../ui/avatar'
 
 const links = [
   { label: 'Dashboard', to: '/', icon: BarChart3 },
@@ -47,9 +48,7 @@ export function Sidebar() {
       <div className="border-t border-zinc-200 pt-6 dark:border-zinc-800">
         <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-900">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
+            <Avatar name={user?.name} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{user?.name}</p>
               <p className="text-xs text-zinc-600 dark:text-zinc-400">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>

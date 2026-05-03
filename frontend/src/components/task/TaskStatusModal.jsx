@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import { Dialog } from '../ui/dialog'
+import { Select } from '../ui/select'
+import { CommentSection } from './CommentSection'
+import { useAuth } from '../../context/AuthContext'
 
 const statusOptions = [
   { value: 'todo', label: 'To do' },
@@ -8,12 +11,21 @@ const statusOptions = [
   { value: 'done', label: 'Done' },
 ]
 
-export function TaskStatusModal({ task, open, onClose, onSave }) {
+const priorityOptions = [
+  { value: 'high', label: 'High' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'low', label: 'Low' },
+]
+
+export function TaskStatusModal({ task, open, onClose, onSave, onPrioritySave, onAddComment }) {
   const [status, setStatus] = useState(task?.status || 'todo')
+  const [priority, setPriority] = useState(task?.priority || 'medium')
+  const { user } = useAuth()
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open && task) setStatus(task.status || 'todo')
+    if (open && task) setPriority(task.priority || 'medium')
   }, [open, task])
 
   if (!open || !task) return null
@@ -35,20 +47,43 @@ export function TaskStatusModal({ task, open, onClose, onSave }) {
         </div>
       }
     >
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="text-sm text-zinc-600 dark:text-zinc-400">{task.title}</div>
-        <label className="flex flex-col gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Status
-          <select
-            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:ring-zinc-800"
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Select
+            label="Status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-          >
-            {statusOptions.map((option) => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-          </select>
-        </label>
+            options={statusOptions}
+          />
+
+          <Select
+            label="Priority"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            options={priorityOptions}
+          />
+        </div>
+
+        {typeof onPrioritySave === 'function' && (
+          <div className="flex justify-end">
+            <Button variant="outline" onClick={() => onPrioritySave(priority)}>
+              Save priority
+            </Button>
+          </div>
+        )}
+
+        {typeof onAddComment === 'function' && (
+          <div>
+            <div className="mb-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">Comments</div>
+            <CommentSection
+              task={task}
+              currentUser={user}
+              onAddComment={(text) => onAddComment(task._id, text)}
+            />
+          </div>
+        )}
       </div>
     </Dialog>
   )

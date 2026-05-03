@@ -4,6 +4,9 @@ import { Button } from '../ui/button'
 
 export function TaskCard({ task, onStatusChange, onDelete }) {
   const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'done'
+  const nowTs = new Date().getTime()
+  const isNearDeadline = !isOverdue && task.status !== 'done' && (new Date(task.dueDate).getTime() - nowTs) <= 1000 * 60 * 60 * 48
+  const isDone = task.status === 'done'
   const getStatusVariant = (status) => {
     switch (status) {
       case 'done':
@@ -21,13 +24,26 @@ export function TaskCard({ task, onStatusChange, onDelete }) {
         return 'danger'
       case 'medium':
         return 'warning'
+      case 'low':
+        return 'success'
       default:
         return 'default'
     }
   }
 
   return (
-    <div className="group rounded-lg border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
+    <div
+      className={[
+        'group rounded-lg border bg-white p-4 transition hover:shadow-sm dark:bg-zinc-900',
+        isOverdue
+          ? 'border-red-300 hover:border-red-400 dark:border-red-900/60 dark:hover:border-red-900'
+          : isNearDeadline
+          ? 'border-amber-300 hover:border-amber-400 dark:border-amber-900/60 dark:hover:border-amber-900'
+          : isDone
+          ? 'border-emerald-300 hover:border-emerald-400 dark:border-emerald-900/60 dark:hover:border-emerald-900'
+          : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700',
+      ].join(' ')}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-3">
@@ -41,6 +57,7 @@ export function TaskCard({ task, onStatusChange, onDelete }) {
                 <Badge variant={getStatusVariant(task.status)}>{task.status.replace('-', ' ')}</Badge>
                 {task.priority && <Badge variant={getPriorityVariant(task.priority)}>{task.priority}</Badge>}
                 {isOverdue && <Badge variant="danger">Overdue</Badge>}
+                {isNearDeadline && <Badge variant="warning">Near deadline</Badge>}
               </div>
             </div>
           </div>

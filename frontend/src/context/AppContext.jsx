@@ -11,7 +11,18 @@ export const AppProvider = ({ children }) => {
   const toast = useToast()
   const [projects, setProjects] = useState([])
   const [tasks, setTasks] = useState([])
+  const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(false)
+
+  const fetchActivities = useCallback(async () => {
+    if (!isAuthenticated) return
+    try {
+      const response = await API.get('/activities', { params: { limit: 20 } })
+      setActivities(response.data)
+    } catch {
+      // keep quiet; dashboard still works without activity feed
+    }
+  }, [isAuthenticated])
 
   const fetchData = useCallback(async () => {
     if (!isAuthenticated) return
@@ -20,12 +31,13 @@ export const AppProvider = ({ children }) => {
       const [projectRes, taskRes] = await Promise.all([API.get('/projects'), API.get('/tasks')])
       setProjects(projectRes.data)
       setTasks(taskRes.data)
+      fetchActivities()
     } catch {
       toast.showToast('Unable to load dashboard data', 'error')
     } finally {
       setLoading(false)
     }
-  }, [isAuthenticated, toast])
+  }, [isAuthenticated, toast, fetchActivities])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -47,13 +59,25 @@ export const AppProvider = ({ children }) => {
   const createTask = async (taskData) => {
     const response = await API.post('/tasks', taskData)
     setTasks((prev) => [response.data, ...prev])
+    fetchActivities()
     toast.showToast('Task created successfully', 'success')
   }
 
-  const updateTaskStatus = async (taskId, status) => {
-    const response = await API.put(`/tasks/${taskId}`, { status })
+  const updateTask = async (taskId, patch) => {
+    const response = await API.put(`/tasks/${taskId}`, patch)
     setTasks((prev) => prev.map((task) => (task._id === taskId ? response.data : task)))
-    toast.showToast('Task status updated', 'success')
+    fetchActivities()
+    toast.showToast('Task updated', 'success')
+  }
+
+  const updateTaskStatus = async (taskId, status) => updateTask(taskId, { status })
+  const updateTaskPriority = async (taskId, priority) => updateTask(taskId, { priority })
+
+  const addTaskComment = async (taskId, text) => {
+    const response = await API.post(`/tasks/${taskId}/comments`, { text })
+    setTasks((prev) => prev.map((task) => (task._id === taskId ? response.data : task)))
+    fetchActivities()
+    toast.showToast('Comment added', 'success')
   }
 
   const stats = useMemo(() => {
@@ -62,11 +86,29 @@ export const AppProvider = ({ children }) => {
     const todo = tasks.filter((task) => task.status === 'todo').length
     const inProgress = tasks.filter((task) => task.status === 'in-progress').length
     const overdue = tasks.filter((task) => task.status !== 'done' && new Date(task.dueDate) < new Date()).length
-    return { total, completed, todo, inProgress, overdue }
+    const completionPct = total ? Math.round((completed / total) * 100) : 0
+    return { total, completed, todo, inProgress, overdue, completionPct }
   }, [tasks])
 
   return (
-    <AppContext.Provider value={{ projects, tasks, loading, stats, fetchData, createProject, addMember, createTask, updateTaskStatus }}>
+    <AppContext.Provider
+      value={{
+        projects,
+        tasks,
+        activities,
+        loading,
+        stats,
+        fetchData,
+        fetchActivities,
+        createProject,
+        addMember,
+        createTask,
+        updateTask,
+        updateTaskStatus,
+        updateTaskPriority,
+        addTaskComment,
+      }}
+    >
       {children}
     </AppContext.Provider>
   )

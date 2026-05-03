@@ -1,9 +1,10 @@
 import Task from '../models/Task.js'
 import Project from '../models/Project.js'
+import Activity from '../models/Activity.js'
 
 export const createTask = async (req, res, next) => {
   try {
-    const { title, description, projectId, assignedTo, status = 'todo', dueDate } = req.body
+    const { title, description, projectId, assignedTo, status = 'todo', dueDate, priority = 'medium' } = req.body
     if (!title || !projectId || !assignedTo || !dueDate) {
       return res.status(400).json({ message: 'Title, project, assignee, and due date are required' })
     }
@@ -28,11 +29,20 @@ export const createTask = async (req, res, next) => {
       assignedTo,
       status,
       dueDate,
+      priority,
     })
 
     const populated = await Task.findById(task._id)
       .populate('projectId', 'name')
       .populate('assignedTo', 'name email')
+
+    await Activity.create({
+      action: 'TASK_CREATED',
+      userId: req.user.id,
+      projectId,
+      taskId: task._id,
+      message: `Task “${task.title}” was created.`,
+    })
 
     res.status(201).json(populated)
   } catch (error) {
@@ -52,6 +62,7 @@ export const getTasks = async (req, res, next) => {
     const tasks = await Task.find(query)
       .populate('projectId', 'name')
       .populate('assignedTo', 'name email')
+      .populate('comments.userId', 'name email role')
       .sort({ dueDate: 1, createdAt: -1 })
 
     res.json(tasks)
@@ -63,9 +74,9 @@ export const getTasks = async (req, res, next) => {
 export const updateTask = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { status } = req.body
-    if (!status) {
-      return res.status(400).json({ message: 'Status is required' })
+    const { status, priority } = req.body
+    if (!status && !priority) {
+      return res.status(400).json({ message: 'Status or priority is required' })
     }
 
     const task = await Task.findById(id)
@@ -83,14 +94,63 @@ export const updateTask = async (req, res, next) => {
       return res.status(403).json({ message: 'Not authorized to update this task' })
     }
 
-    task.status = status
+    const prevStatus = task.status
+    if (status) task.status = status
+    if (priority) task.priority = priority
     await task.save()
 
     const updated = await Task.findById(id)
       .populate('projectId', 'name')
       .populate('assignedTo', 'name email')
 
+    const becameCompleted = status === 'done' && prevStatus !== 'done'
+    await Activity.create({
+      action: becameCompleted ? 'TASK_COMPLETED' : 'TASK_UPDATED',
+      userId: req.user.id,
+      projectId: task.projectId,
+      taskId: task._id,
+      message: becameCompleted ? `Task “${task.title}” was completed.` : `Task “${task.title}” was updated.`,
+    })
+
     res.json(updated)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const addTaskComment = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { text } = req.body
+    if (!text || !String(text).trim()) {
+      return res.status(400).json({ message: 'Comment text is required' })
+    }
+
+    const task = await Task.findById(id)
+    if (!task) return res.status(404).json({ message: 'Task not found' })
+
+    const project = await Project.findById(task.projectId).select('members')
+    if (!project || !project.members.some((member) => member.equals(req.user.id))) {
+      return res.status(403).json({ message: 'Not authorized to access this task' })
+    }
+
+    task.comments.push({ userId: req.user.id, text: String(text).trim() })
+    await task.save()
+
+    const updated = await Task.findById(id)
+      .populate('projectId', 'name')
+      .populate('assignedTo', 'name email')
+      .populate('comments.userId', 'name email role')
+
+    await Activity.create({
+      action: 'TASK_UPDATED',
+      userId: req.user.id,
+      projectId: task.projectId,
+      taskId: task._id,
+      message: `Comment added to “${task.title}”.`,
+    })
+
+    res.status(201).json(updated)
   } catch (error) {
     next(error)
   }

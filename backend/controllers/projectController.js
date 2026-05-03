@@ -1,5 +1,6 @@
 import Project from '../models/Project.js'
 import User from '../models/User.js'
+import Activity from '../models/Activity.js'
 
 export const createProject = async (req, res, next) => {
   try {
@@ -71,6 +72,13 @@ export const addProjectMember = async (req, res, next) => {
 
     project.members.push(user._id)
     await project.save()
+
+    await Activity.create({
+      action: 'MEMBER_ADDED',
+      userId: req.user.id,
+      projectId: project._id,
+      message: `${user.name} was added to project “${project.name}”.`,
+    })
 
     const updated = await Project.findById(projectId).populate('members', 'name email role')
     res.json(updated)
