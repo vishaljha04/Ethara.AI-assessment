@@ -2,9 +2,9 @@ import clsx from 'clsx'
 
 export function Card({ children, className, variant = 'default' }) {
   const variants = {
-    default: 'rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800',
-    elevated: 'rounded-lg border border-slate-200 bg-white shadow-md dark:border-slate-700 dark:bg-slate-800',
-    outline: 'rounded-lg border-2 border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800',
+    default: 'rounded-lg border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900',
+    elevated: 'rounded-lg border border-zinc-200 bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900',
+    outline: 'rounded-lg border-2 border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900',
   }
 
   return (

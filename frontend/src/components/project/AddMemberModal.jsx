@@ -26,6 +26,7 @@ export function AddMemberModal({ open, onClose, onAdd, projectId, existingMember
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchUsers()
       setSearch('') // Reset search when modal opens
     }
@@ -92,24 +93,24 @@ export function AddMemberModal({ open, onClose, onAdd, projectId, existingMember
 
         <div className="max-h-64 overflow-y-auto space-y-2">
           {loading ? (
-            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+            <div className="text-center py-8 text-zinc-500 dark:text-zinc-400">
               Loading users...
             </div>
           ) : filteredUsers.length === 0 ? (
-            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+            <div className="text-center py-8 text-zinc-500 dark:text-zinc-400">
               {search ? 'No users found matching your search.' : 'No available users to add.'}
             </div>
           ) : (
             filteredUsers.map((user) => (
               <div 
                 key={user._id} 
-                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800 transition"
+                className="flex items-center justify-between p-3 rounded-lg border border-zinc-200 hover:bg-gray-50 dark:border-zinc-800 dark:hover:bg-zinc-900 transition"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-slate-900 dark:text-slate-100 truncate">
+                  <p className="font-medium text-zinc-900 dark:text-zinc-100 truncate">
                     {user.name || 'Unknown User'}
                   </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 truncate">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 truncate">
                     {user.email || 'No email'} • <span className="capitalize">{user.role || 'member'}</span>
                   </p>
                 </div>

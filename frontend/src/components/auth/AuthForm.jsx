@@ -41,19 +41,19 @@ export function AuthForm({ initialMode = 'login' }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-lg border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+    <div className="mx-auto w-full max-w-md rounded-lg border border-zinc-200 bg-white p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
       <div className="mb-8 text-center">
-        <div className="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Team Task</div>
-        <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">Manager</h1>
-        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">{mode === 'login' ? 'Welcome back to your workspace' : 'Join your team workspace'}</p>
+        <div className="text-xs font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Team Task</div>
+        <h1 className="mt-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">Manager</h1>
+        <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">{mode === 'login' ? 'Welcome back to your workspace' : 'Join your team workspace'}</p>
       </div>
 
       {/* Mode Toggle */}
-      <div className="mb-6 flex gap-2 rounded-lg bg-slate-100 p-1 dark:bg-slate-700">
+      <div className="mb-6 flex gap-2 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800">
         <button
           type="button"
           onClick={() => setMode('login')}
-          className={`flex-1 rounded-lg py-2 px-3 text-sm font-semibold transition ${mode === 'login' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}
+          className={`flex-1 rounded-lg py-2 px-3 text-sm font-semibold transition ${mode === 'login' ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-100' : 'text-zinc-600 dark:text-zinc-400'}`}
         >
           <LogIn size={16} className="inline mr-2" />
           Login
@@ -61,7 +61,7 @@ export function AuthForm({ initialMode = 'login' }) {
         <button
           type="button"
           onClick={() => setMode('signup')}
-          className={`flex-1 rounded-lg py-2 px-3 text-sm font-semibold transition ${mode === 'signup' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}
+          className={`flex-1 rounded-lg py-2 px-3 text-sm font-semibold transition ${mode === 'signup' ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-100' : 'text-zinc-600 dark:text-zinc-400'}`}
         >
           <UserPlus size={16} className="inline mr-2" />
           Sign up
@@ -115,7 +115,7 @@ export function AuthForm({ initialMode = 'login' }) {
         </Button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-slate-600 dark:text-slate-400">
+      <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">
         {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
         <button
           type="button"

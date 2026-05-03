@@ -7,13 +7,13 @@ export function Breadcrumb({ items }) {
       {items.map((item, idx) => (
         <div key={idx} className="flex items-center gap-2">
           {item.href ? (
-            <Link to={item.href} className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
+            <Link to={item.href} className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
               {item.label}
             </Link>
           ) : (
-            <span className="text-slate-900 font-semibold dark:text-slate-100">{item.label}</span>
+            <span className="text-zinc-900 font-semibold dark:text-zinc-100">{item.label}</span>
           )}
-          {idx < items.length - 1 && <ChevronRight size={16} className="text-slate-400" />}
+          {idx < items.length - 1 && <ChevronRight size={16} className="text-zinc-400" />}
         </div>
       ))}
     </nav>

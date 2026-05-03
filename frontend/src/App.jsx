@@ -12,10 +12,10 @@ import { ToastContainer } from './components/ui/toast'
 
 function Layout() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-gray-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <div className="lg:grid lg:grid-cols-[280px_1fr]">
         <Sidebar />
-        <main className="min-h-screen bg-slate-50 dark:bg-slate-900">
+        <main className="min-h-screen bg-gray-50 dark:bg-zinc-950">
           <Topbar />
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <Outlet />
@@ -31,7 +31,7 @@ function App() {
   const { messages } = useToast()
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-gray-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Routes>
         <Route path="/login" element={<AuthPage />} />
         <Route path="/signup" element={<AuthPage />} />

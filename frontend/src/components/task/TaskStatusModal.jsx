@@ -36,11 +36,11 @@ export function TaskStatusModal({ task, open, onClose, onSave }) {
       }
     >
       <div className="space-y-4">
-        <div className="text-sm text-slate-600">{task.title}</div>
-        <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
+        <div className="text-sm text-zinc-600 dark:text-zinc-400">{task.title}</div>
+        <label className="flex flex-col gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Status
           <select
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:ring-zinc-800"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >

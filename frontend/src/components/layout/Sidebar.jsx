@@ -13,11 +13,11 @@ export function Sidebar() {
   const { user, logout } = useAuth()
 
   return (
-    <aside className="hidden w-64 flex-col gap-6 border-r border-slate-200 bg-white px-6 py-8 lg:flex dark:border-slate-700 dark:bg-slate-900">
+    <aside className="hidden w-64 flex-col gap-6 border-r border-zinc-200 bg-white px-6 py-8 lg:flex dark:border-zinc-800 dark:bg-zinc-950">
       {/* Logo / Brand */}
       <div className="flex flex-col gap-1">
-        <div className="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Team Task</div>
-        <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">Manager</div>
+        <div className="text-xs font-semibold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Team Task</div>
+        <div className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Manager</div>
       </div>
 
       {/* Navigation */}
@@ -31,8 +31,8 @@ export function Sidebar() {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition ${
                   isActive
-                    ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100'
-                    : 'text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800'
+                    ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100'
+                    : 'text-zinc-700 hover:bg-gray-50 dark:text-zinc-300 dark:hover:bg-zinc-900'
                 }`
               }
             >
@@ -44,15 +44,15 @@ export function Sidebar() {
       </nav>
 
       {/* User Card */}
-      <div className="border-t border-slate-200 pt-6 dark:border-slate-700">
-        <div className="rounded-lg bg-slate-50 p-4 dark:bg-slate-800">
+      <div className="border-t border-zinc-200 pt-6 dark:border-zinc-800">
+        <div className="rounded-lg bg-gray-50 p-4 dark:bg-zinc-900">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{user?.name}</p>
-              <p className="text-xs text-slate-600 dark:text-slate-400">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{user?.name}</p>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">{user?.role === 'admin' ? 'Admin' : 'Member'}</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={logout} className="w-full mt-3 justify-start">

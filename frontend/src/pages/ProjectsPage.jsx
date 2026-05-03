@@ -20,8 +20,8 @@ export function ProjectsPage() {
       {/* Page Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Projects</h1>
-          <p className="mt-2 text-slate-600 dark:text-slate-400">Manage your team workspaces and collaboration areas</p>
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">Projects</h1>
+          <p className="mt-2 text-zinc-600 dark:text-zinc-400">Manage your team workspaces and collaboration areas</p>
         </div>
         {user?.role === 'admin' && (
           <Button onClick={() => setIsOpen(true)}>

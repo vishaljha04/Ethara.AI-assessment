@@ -21,8 +21,8 @@ export function DashboardPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-400">Welcome back! Here's your task overview for today.</p>
+        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">Welcome back! Here's your task overview for today.</p>
       </div>
 
       {/* Stats Grid */}
@@ -59,8 +59,8 @@ export function DashboardPage() {
       <Card className="p-6">
         <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Recent Tasks</h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Your most active work items</p>
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Recent Tasks</h2>
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Your most active work items</p>
           </div>
         </div>
 

@@ -12,25 +12,25 @@ export function ProjectTable({ projects, onAddMember, loading, isAdmin }) {
   }
 
   if (loading) {
-    return <div className="rounded-3xl border border-slate-200 bg-white p-8 dark:border-slate-700 dark:bg-slate-800">Loading projects…</div>
+    return <div className="rounded-3xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-zinc-900">Loading projects…</div>
   }
 
   if (!projects.length) {
-    return <div className="rounded-3xl border border-slate-200 bg-white p-8 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">No projects yet. Create one to get started.</div>
+    return <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">No projects yet. Create one to get started.</div>
   }
 
   return (
     <div className="space-y-6">
       {projects.map((project) => (
-        <Card key={project._id} className="p-6 dark:bg-slate-800 dark:border-slate-700">
+        <Card key={project._id} className="p-6 dark:bg-zinc-900 dark:border-zinc-800">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{project.name}</h3>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Created by {project.createdBy?.name}</p>
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{project.name}</h3>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Created by {project.createdBy?.name}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {project.members.map((member) => (
-                <span key={member._id} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                <span key={member._id} className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                   {member.name}
                 </span>
               ))}

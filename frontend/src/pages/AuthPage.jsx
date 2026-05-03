@@ -16,7 +16,7 @@ export function AuthPage() {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-12 sm:px-6 lg:px-8 dark:bg-slate-900">
+    <div className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8 dark:bg-zinc-950">
       <div className="mx-auto max-w-2xl">
         <AuthForm initialMode={isSignup ? 'signup' : 'login'} />
       </div>

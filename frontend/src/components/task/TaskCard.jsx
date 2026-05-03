@@ -27,16 +27,16 @@ export function TaskCard({ task, onStatusChange, onDelete }) {
   }
 
   return (
-    <div className="group rounded-lg border border-slate-200 bg-white p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
+    <div className="group rounded-lg border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-3">
             <input type="checkbox" checked={task.status === 'done'} onChange={() => onStatusChange(task)} className="mt-1 rounded" />
             <div className="flex-1">
-              <h3 className={`font-semibold text-slate-900 dark:text-slate-100 ${task.status === 'done' ? 'line-through text-slate-500 dark:text-slate-400' : ''}`}>
+              <h3 className={`font-semibold text-zinc-900 dark:text-zinc-100 ${task.status === 'done' ? 'line-through text-zinc-500 dark:text-zinc-400' : ''}`}>
                 {task.title}
               </h3>
-              {task.description && <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{task.description}</p>}
+              {task.description && <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">{task.description}</p>}
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Badge variant={getStatusVariant(task.status)}>{task.status.replace('-', ' ')}</Badge>
                 {task.priority && <Badge variant={getPriorityVariant(task.priority)}>{task.priority}</Badge>}
@@ -54,7 +54,7 @@ export function TaskCard({ task, onStatusChange, onDelete }) {
           </Button>}
         </div>
       </div>
-      <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
         {task.projectId && <span>{task.projectId.name}</span>}
         {task.assignedTo && <span>Assigned to {task.assignedTo.name}</span>}
         <span>Due {new Date(task.dueDate).toLocaleDateString()}</span>
