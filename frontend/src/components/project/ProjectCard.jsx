@@ -1,0 +1,49 @@
+import { MoreVertical, Users, CheckCircle2 } from 'lucide-react'
+import { Button } from '../ui/button'
+
+export function ProjectCard({ project, onAddMember, isAdmin }) {
+  return (
+    <div className="group rounded-lg border border-slate-200 bg-white p-6 transition hover:border-slate-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{project.name}</h3>
+          {project.description && <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">{project.description}</p>}
+        </div>
+        <div className="opacity-0 transition group-hover:opacity-100">
+          <Button variant="ghost" size="sm">
+            <MoreVertical size={16} />
+          </Button>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+          <Users size={16} />
+          <span>{project.members?.length || 0} members</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+          <CheckCircle2 size={16} />
+          <span>{project.tasks?.length || 0} tasks</span>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-2">
+        {project.members?.slice(0, 3).map((member) => (
+          <div key={member._id} className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs dark:bg-slate-700">
+            <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+              {member.name.charAt(0).toUpperCase()}
+            </div>
+            {member.name}
+          </div>
+        ))}
+        {project.members?.length > 3 && <div className="flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600 dark:bg-slate-700 dark:text-slate-400">+{project.members.length - 3}</div>}
+      </div>
+
+      {isAdmin && (
+        <Button onClick={() => onAddMember(project._id)} className="mt-6 w-full" variant="outline">
+          Add member
+        </Button>
+      )}
+    </div>
+  )
+}

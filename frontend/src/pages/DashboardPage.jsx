@@ -1,60 +1,106 @@
 import { useEffect } from 'react'
 import { useApp } from '../context/AppContext'
 import { StatCard } from '../components/dashboard/StatCard'
+import { TaskCard } from '../components/task/TaskCard'
+import { EmptyState } from '../components/ui/empty-state'
+import { SkeletonCard } from '../components/ui/skeleton'
 import { Card } from '../components/ui/card'
+import { BarChart3, CheckCircle2, AlertCircle, Clock } from 'lucide-react'
 
 export function DashboardPage() {
-  const { stats, tasks, loading, fetchData } = useApp()
+  const { stats, tasks, loading, fetchData, updateTaskStatus } = useApp()
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
+  const recentTasks = tasks.slice(0, 6)
+  const overdueTasks = tasks.filter(t => new Date(t.dueDate) < new Date() && t.status !== 'done')
+
   return (
     <div className="space-y-8">
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Total tasks" value={stats.total} description="All tasks across your projects." accent="" />
-        <StatCard title="Completed" value={stats.completed} description="Tasks marked done." accent="" />
-        <StatCard title="Pending" value={stats.pending} description="Tasks still waiting." accent="" />
-        <StatCard title="Overdue" value={stats.overdue} description="Tasks that need attention." accent="" />
+      {/* Page Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h1>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">Welcome back! Here's your task overview for today.</p>
       </div>
 
+      {/* Stats Grid */}
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <StatCard 
+          title="Total Tasks" 
+          value={stats.total} 
+          description="Across all projects" 
+          icon={BarChart3}
+        />
+        <StatCard 
+          title="Completed" 
+          value={stats.completed} 
+          description="Keep it up!" 
+          icon={CheckCircle2}
+          trend={{ positive: true, label: '+5 this week' }}
+        />
+        <StatCard 
+          title="In Progress" 
+          value={stats.pending} 
+          description="Currently active" 
+          icon={Clock}
+        />
+        <StatCard 
+          title="Overdue" 
+          value={overdueTasks.length} 
+          description="Need attention" 
+          icon={AlertCircle}
+          trend={{ positive: false, label: `-${Math.max(0, overdueTasks.length - 2)} from yesterday` }}
+        />
+      </div>
+
+      {/* Recent Tasks Section */}
       <Card className="p-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900">Recent tasks</h2>
-            <p className="mt-2 text-sm text-slate-600">Quick view of your most important work.</p>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Recent Tasks</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Your most active work items</p>
           </div>
         </div>
 
-        <div className="mt-6 space-y-3">
-          {loading ? (
-            <div className="space-y-3">
-              {[...Array(3)].map((_, index) => (
-                <div key={index} className="h-20 rounded-3xl bg-slate-100" />
-              ))}
-            </div>
-          ) : (
-            tasks.slice(0, 4).map((task) => (
-              <div key={task._id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <h3 className="font-semibold text-slate-900">{task.title}</h3>
-                    <p className="text-sm text-slate-600">{task.projectId?.name}</p>
-                  </div>
-                  <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
-                    {task.status.replace('-', ' ')}
-                  </span>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2 text-sm text-slate-600">
-                  <span>Due {new Date(task.dueDate).toLocaleDateString()}</span>
-                  <span>Assigned to {task.assignedTo?.name}</span>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        {loading ? (
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : recentTasks.length > 0 ? (
+          <div className="space-y-3">
+            {recentTasks.map((task) => (
+              <TaskCard 
+                key={task._id} 
+                task={task} 
+                onStatusChange={() => updateTaskStatus(task._id, task.status === 'done' ? 'todo' : 'done')}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState 
+            icon={CheckCircle2}
+            title="No tasks yet" 
+            description="Create your first task to get started" 
+          />
+        )}
       </Card>
+
+      {/* Overdue Tasks Alert */}
+      {overdueTasks.length > 0 && (
+        <Card className="border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-900/20">
+          <div className="flex items-start gap-4">
+            <AlertCircle className="mt-1 text-red-600 dark:text-red-400" size={24} />
+            <div>
+              <h3 className="font-semibold text-red-900 dark:text-red-100">{overdueTasks.length} overdue tasks</h3>
+              <p className="mt-1 text-sm text-red-700 dark:text-red-300">You have {overdueTasks.length} task{overdueTasks.length > 1 ? 's' : ''} that need immediate attention.</p>
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   )
 }

@@ -1,88 +1,194 @@
-# Team Task Manager
+# 🚀 Team Task Manager
 
-A production-ready team task manager web app built with React, Tailwind CSS, Node.js, Express, MongoDB, and JWT authentication.
+A **modern, production-ready Team Task Manager** built with a full-stack JavaScript architecture.
+This app enables teams to collaborate efficiently by managing projects, assigning tasks, and tracking progress with **role-based access control**.
 
-## Project structure
+---
+
+## ✨ Live Demo
+
+🔗 **Live App:** *[Add your deployed URL here]*
+📂 **GitHub Repository:** *[Add repo link here]*
+
+---
+
+## 📌 Overview
+
+This application is designed to simulate a real-world team collaboration tool (similar to Jira/Notion-lite), featuring:
+
+* 🔐 Secure authentication (JWT-based)
+* 👥 Role-based access (Admin / Member)
+* 📁 Project and team management
+* ✅ Task creation, assignment & tracking
+* 📊 Dashboard insights (status + overdue tasks)
+* 🎨 Clean and responsive modern UI
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* ⚛️ React (Vite)
+* 🎨 Tailwind CSS
+* 🧩 shadcn/ui components
+* 🔄 React Router
+* 📦 Axios
+
+### Backend
+
+* 🟢 Node.js
+* 🚂 Express.js
+* 🍃 MongoDB (Mongoose)
+* 🔑 JWT Authentication
+
+### Deployment
+
+* 🚀 Railway (Backend)
+* ▲ Vercel / Netlify (Frontend)
+
+---
+
+## 🧱 Project Structure
 
 ```
 EtharaAI assessment/
-├── backend/
-│   ├── config/
-│   │   └── db.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── projectController.js
-│   │   └── taskController.js
-│   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   ├── errorHandler.js
-│   │   └── roleMiddleware.js
-│   ├── models/
-│   │   ├── Project.js
-│   │   ├── Task.js
-│   │   └── User.js
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── projectRoutes.js
-│   │   └── taskRoutes.js
-│   ├── .env.example
-│   ├── package.json
-│   ├── Procfile
-│   ├── railway.json
-│   └── server.js
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── auth/
-│   │   │   ├── dashboard/
-│   │   │   ├── layout/
-│   │   │   ├── project/
-│   │   │   ├── task/
-│   │   │   └── ui/
-│   │   ├── context/
-│   │   ├── lib/
-│   │   ├── pages/
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   └── main.jsx
-│   ├── .env.example
-│   ├── package.json
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   └── vite.config.js
+├── backend/     # Express API + MongoDB
+├── frontend/    # React + Tailwind UI
 ```
 
-## Backend
+---
 
-### Features
+## 🔐 Authentication & Authorization
 
-- JWT authentication
-- Role-based access control
-- Admin-only project and task creation
-- Member task view and status updates
-- Express API with Mongoose models
+* Secure login/signup using **JWT**
+* Token stored in `localStorage`
+* Middleware-protected routes
+* Role-based access:
 
-### API endpoints
+  * **Admin**
 
-- `POST /api/auth/signup`
-- `POST /api/auth/login`
-- `POST /api/projects` (Admin only)
-- `GET /api/projects`
-- `POST /api/projects/add-member` (Admin only)
-- `POST /api/tasks` (Admin only)
-- `GET /api/tasks`
-- `PUT /api/tasks/:id`
+    * Create projects
+    * Add members
+    * Assign tasks
+  * **Member**
 
-### Backend env variables
+    * View assigned tasks
+    * Update task status
 
-Use `backend/.env.example` as a template:
+---
 
-- `MONGO_URI`
-- `JWT_SECRET`
-- `PORT`
+## 📦 Core Features
 
-### Run backend locally
+### 👤 User Authentication
+
+* Signup & Login
+* Persistent sessions using JWT
+
+---
+
+### 📁 Project Management
+
+* Create and manage projects (Admin)
+* Add team members
+* View assigned projects
+
+---
+
+### ✅ Task Management
+
+* Create tasks (Admin only)
+* Assign tasks to members
+* Track status:
+
+  * `Todo`
+  * `In Progress`
+  * `Done`
+* Update task progress
+* Due date tracking
+
+---
+
+### 📊 Dashboard
+
+* Overview of:
+
+  * Total tasks
+  * Completed tasks
+  * Pending tasks
+  * Overdue tasks
+* Visual and structured layout
+
+---
+
+### 🎨 UI/UX Highlights
+
+* Modern SaaS-style interface
+* Responsive design (mobile + desktop)
+* Reusable UI components
+* Toast notifications
+* Modal-based forms
+* Clean layout with sidebar navigation
+
+---
+
+## 🔌 API Endpoints
+
+### Auth
+
+```
+POST /api/auth/signup
+POST /api/auth/login
+```
+
+### Projects
+
+```
+POST /api/projects              (Admin only)
+GET /api/projects
+POST /api/projects/add-member  (Admin only)
+```
+
+### Tasks
+
+```
+POST /api/tasks                (Admin only)
+GET /api/tasks
+PUT /api/tasks/:id             (Update status)
+```
+
+---
+
+## ⚙️ Environment Variables
+
+### Backend (`backend/.env`)
+
+```
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+PORT=5000
+```
+
+### Frontend (`frontend/.env`)
+
+```
+VITE_API_URL=http://localhost:5000
+```
+
+---
+
+## 🧪 Run Locally
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd <project-folder>
+```
+
+---
+
+### 2️⃣ Setup Backend
 
 ```bash
 cd backend
@@ -90,24 +196,9 @@ npm install
 npm start
 ```
 
-## Frontend
+---
 
-### Features
-
-- React + Vite + Tailwind CSS
-- React Router for protected routes
-- JWT token persistence in `localStorage`
-- Dashboard stats and task management
-- Admin/member role UI variations
-- Toast notifications and modal forms
-
-### Frontend env variables
-
-Use `frontend/.env.example` as a template:
-
-- `VITE_API_URL`
-
-### Run frontend locally
+### 3️⃣ Setup Frontend
 
 ```bash
 cd frontend
@@ -115,23 +206,73 @@ npm install
 npm run dev
 ```
 
-## Deployment
+---
 
-### Railway backend deployment
+## 🚀 Deployment Guide
 
-The backend includes Railway-ready config with `Procfile` and `railway.json`.
+### Backend (Railway)
 
-1. Create a Railway project.
-2. Connect repository.
-3. Set environment variables from `backend/.env.example`.
-4. Deploy the backend service.
+1. Create a project on Railway
+2. Connect your GitHub repo
+3. Add environment variables
+4. Deploy
 
-### Frontend deployment
+---
 
-The frontend can be deployed via Vercel, Netlify, or any static hosting provider using the Vite build output.
+### Frontend (Vercel / Netlify)
 
-## Notes
+```bash
+npm run build
+```
 
-- The app uses modern JS and no TypeScript.
-- UI components follow shadcn-style patterns with responsive Tailwind utility classes.
-- Backend and frontend are separated for clean deployment.
+* Upload `/dist` folder or connect repo for auto-deploy
+
+---
+
+## 📸 Demo Walkthrough (Recommended)
+
+Include a short 2–5 minute video showing:
+
+* User authentication
+* Admin creating project
+* Assigning tasks
+* Member updating task status
+* Dashboard updates
+
+---
+
+## 💡 Future Improvements
+
+* 🧲 Drag & drop Kanban board
+* 📈 Advanced analytics (charts)
+* 🔔 Notifications system
+* 🔍 Global search
+* 📅 Calendar view for tasks
+* 🌙 Dark mode toggle
+
+---
+
+## 🧠 Key Learnings
+
+* Designing scalable REST APIs
+* Implementing role-based access control
+* Managing full-stack state and data flow
+* Building responsive, reusable UI components
+* Deploying production-ready applications
+
+---
+
+## 📄 License
+
+This project is for assessment and educational purposes.
+
+---
+
+## 🙌 Author
+
+**Vishal Jha**
+Final Year IT Student | Full Stack Developer
+
+---
+
+⭐ If you like this project, consider giving it a star!
