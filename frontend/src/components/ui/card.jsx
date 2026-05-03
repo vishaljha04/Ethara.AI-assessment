@@ -1,7 +1,16 @@
-export function Card({ children, className }) {
+import clsx from 'clsx'
+
+export function Card({ children, className, variant = 'default' }) {
+  const variants = {
+    default: 'rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800',
+    elevated: 'rounded-lg border border-slate-200 bg-white shadow-md dark:border-slate-700 dark:bg-slate-800',
+    outline: 'rounded-lg border-2 border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800',
+  }
+
   return (
-    <div className={`rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900 ${className || ''}`}>
+    <div className={clsx(variants[variant], 'p-6', className)}>
       {children}
     </div>
   )
 }
+

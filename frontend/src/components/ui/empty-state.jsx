@@ -1,5 +1,4 @@
-import { InboxIcon, FolderOpen, CheckCircle2 } from 'lucide-react'
-import { Button } from './button'
+import { InboxIcon } from 'lucide-react'
 
 export function EmptyState({ icon: Icon, title, description, action }) {
   return (

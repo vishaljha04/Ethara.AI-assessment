@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
       const [projectRes, taskRes] = await Promise.all([API.get('/projects'), API.get('/tasks')])
       setProjects(projectRes.data)
       setTasks(taskRes.data)
-    } catch (err) {
+    } catch {
       toast.showToast('Unable to load dashboard data', 'error')
     } finally {
       setLoading(false)
@@ -28,11 +28,12 @@ export const AppProvider = ({ children }) => {
   }, [isAuthenticated, toast])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData()
   }, [fetchData])
 
-  const createProject = async (projectName) => {
-    const response = await API.post('/projects', { name: projectName })
+  const createProject = async ({ name, description }) => {
+    const response = await API.post('/projects', { name, description })
     setProjects((prev) => [response.data, ...prev])
     toast.showToast('Project created successfully', 'success')
   }
@@ -58,9 +59,10 @@ export const AppProvider = ({ children }) => {
   const stats = useMemo(() => {
     const total = tasks.length
     const completed = tasks.filter((task) => task.status === 'done').length
-    const pending = tasks.filter((task) => task.status === 'todo').length
+    const todo = tasks.filter((task) => task.status === 'todo').length
+    const inProgress = tasks.filter((task) => task.status === 'in-progress').length
     const overdue = tasks.filter((task) => task.status !== 'done' && new Date(task.dueDate) < new Date()).length
-    return { total, completed, pending, overdue }
+    return { total, completed, todo, inProgress, overdue }
   }, [tasks])
 
   return (

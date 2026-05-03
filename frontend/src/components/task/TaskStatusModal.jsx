@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import { Dialog } from '../ui/dialog'
 
@@ -10,6 +10,11 @@ const statusOptions = [
 
 export function TaskStatusModal({ task, open, onClose, onSave }) {
   const [status, setStatus] = useState(task?.status || 'todo')
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (open && task) setStatus(task.status || 'todo')
+  }, [open, task])
 
   if (!open || !task) return null
 

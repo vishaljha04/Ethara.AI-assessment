@@ -13,6 +13,10 @@ export const createTask = async (req, res, next) => {
       return res.status(404).json({ message: 'Project not found' })
     }
 
+    if (!project.members.some((member) => member.equals(req.user.id))) {
+      return res.status(403).json({ message: 'Not authorized to create tasks for this project' })
+    }
+
     if (!project.members.some((member) => member.equals(assignedTo))) {
       return res.status(400).json({ message: 'Assignee must belong to the project' })
     }
@@ -67,6 +71,11 @@ export const updateTask = async (req, res, next) => {
     const task = await Task.findById(id)
     if (!task) {
       return res.status(404).json({ message: 'Task not found' })
+    }
+
+    const project = await Project.findById(task.projectId).select('members')
+    if (!project || !project.members.some((member) => member.equals(req.user.id))) {
+      return res.status(403).json({ message: 'Not authorized to access this task' })
     }
 
     const isAssignee = task.assignedTo.equals(req.user.id)

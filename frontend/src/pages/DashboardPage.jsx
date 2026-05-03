@@ -42,7 +42,7 @@ export function DashboardPage() {
         />
         <StatCard 
           title="In Progress" 
-          value={stats.pending} 
+          value={stats.inProgress} 
           description="Currently active" 
           icon={Clock}
         />

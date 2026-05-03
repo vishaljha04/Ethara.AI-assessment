@@ -1,22 +1,28 @@
 import clsx from 'clsx'
 
-export function Button({ children, className, variant = 'primary', size = 'md', ...props }) {
-  const base = 'inline-flex items-center justify-center rounded-xl font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 gap-2'
+export function Button({ children, className, variant = 'primary', size = 'md', disabled, ...props }) {
+  const base = 'inline-flex items-center justify-center rounded-lg font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
   const variants = {
-    primary: 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200',
-    secondary: 'bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:hover:bg-slate-700',
-    ghost: 'bg-transparent text-slate-900 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800',
-    destructive: 'bg-rose-500 text-white hover:bg-rose-600',
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900',
+    secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200 focus:ring-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 dark:focus:ring-slate-700',
+    outline: 'border-2 border-slate-300 text-slate-900 hover:bg-slate-50 focus:ring-slate-300 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800 dark:focus:ring-slate-700',
+    ghost: 'bg-transparent text-slate-900 hover:bg-slate-100 focus:ring-slate-300 dark:text-slate-100 dark:hover:bg-slate-800 dark:focus:ring-slate-700',
+    destructive: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900',
   }
   const sizes = {
     sm: 'h-9 px-3 text-sm',
-    md: 'h-11 px-4 text-sm',
+    md: 'h-10 px-4 text-sm',
     lg: 'h-12 px-5 text-base',
   }
 
   return (
-    <button className={clsx(base, variants[variant], sizes[size], className)} {...props}>
+    <button
+      className={clsx(base, variants[variant], sizes[size], className)}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </button>
   )
 }
+

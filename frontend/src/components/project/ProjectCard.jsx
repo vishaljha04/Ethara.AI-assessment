@@ -1,7 +1,7 @@
 import { MoreVertical, Users, CheckCircle2 } from 'lucide-react'
 import { Button } from '../ui/button'
 
-export function ProjectCard({ project, onAddMember, isAdmin }) {
+export function ProjectCard({ project, taskCount = 0, onAddMember, isAdmin }) {
   return (
     <div className="group rounded-lg border border-slate-200 bg-white p-6 transition hover:border-slate-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
       <div className="flex items-start justify-between gap-4">
@@ -23,7 +23,7 @@ export function ProjectCard({ project, onAddMember, isAdmin }) {
         </div>
         <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
           <CheckCircle2 size={16} />
-          <span>{project.tasks?.length || 0} tasks</span>
+          <span>{taskCount} tasks</span>
         </div>
       </div>
 

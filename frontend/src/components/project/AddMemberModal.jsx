@@ -4,18 +4,21 @@ import { Dialog } from '../ui/dialog'
 import { Input } from '../ui/input'
 import API from '../../lib/api'
 
-export function AddMemberModal({ open, onClose, onAdd, projectId }) {
+export function AddMemberModal({ open, onClose, onAdd, projectId, existingMembers = [] }) {
   const [users, setUsers] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const fetchUsers = async () => {
     setLoading(true)
+    setError(null)
     try {
-      const response = await api.get('/users')
+      const response = await API.get('/users')
       setUsers(response.data)
     } catch (err) {
       console.error('Failed to fetch users:', err)
+      setError('Failed to load users. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -24,16 +27,42 @@ export function AddMemberModal({ open, onClose, onAdd, projectId }) {
   useEffect(() => {
     if (open) {
       fetchUsers()
+      setSearch('') // Reset search when modal opens
     }
   }, [open])
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(search.toLowerCase()) ||
-    user.email.toLowerCase().includes(search.toLowerCase())
-  )
+  // Filter out users who are already members with null checks
+  const filteredUsers = users.filter(user => {
+    // Ensure user has required properties
+    if (!user || !user._id) return false
+    
+    const userName = user.name || ''
+    const userEmail = user.email || ''
+    const searchLower = search.toLowerCase()
+    
+    const matchesSearch = 
+      userName.toLowerCase().includes(searchLower) ||
+      userEmail.toLowerCase().includes(searchLower)
+    
+    const isExistingMember = existingMembers.some(
+      member => member?._id === user._id || member?.email === user.email
+    )
+    
+    return matchesSearch && !isExistingMember
+  })
 
-  const handleAdd = (userId) => {
-    onAdd(projectId, users.find(u => u._id === userId).email)
+  const handleAdd = async (userId) => {
+    const selectedUser = users.find((u) => u._id === userId)
+    if (!selectedUser) return
+    
+    try {
+      await onAdd(projectId, selectedUser.email)
+      // Optionally close modal after successful add
+      // onClose()
+    } catch (err) {
+      console.error('Failed to add member:', err)
+      setError('Failed to add member. Please try again.')
+    }
   }
 
   return (
@@ -54,17 +83,37 @@ export function AddMemberModal({ open, onClose, onAdd, projectId }) {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name or email..."
         />
+
+        {error && (
+          <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
+            {error}
+          </div>
+        )}
+
         <div className="max-h-64 overflow-y-auto space-y-2">
           {loading ? (
-            <div className="text-center py-4">Loading users...</div>
+            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+              Loading users...
+            </div>
+          ) : filteredUsers.length === 0 ? (
+            <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+              {search ? 'No users found matching your search.' : 'No available users to add.'}
+            </div>
           ) : (
             filteredUsers.map((user) => (
-              <div key={user._id} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                <div>
-                  <p className="font-medium text-slate-900 dark:text-slate-100">{user.name}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{user.email} • {user.role}</p>
+              <div 
+                key={user._id} 
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800 transition"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-slate-900 dark:text-slate-100 truncate">
+                    {user.name || 'Unknown User'}
+                  </p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 truncate">
+                    {user.email || 'No email'} • <span className="capitalize">{user.role || 'member'}</span>
+                  </p>
                 </div>
-                <Button size="sm" onClick={() => handleAdd(user._id)}>
+                <Button size="sm" onClick={() => handleAdd(user._id)} className="ml-3">
                   Add
                 </Button>
               </div>

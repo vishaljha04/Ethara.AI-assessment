@@ -4,11 +4,12 @@ import { Dialog } from '../ui/dialog'
 import { Input } from '../ui/input'
 
 export function ProjectModal({ open, onClose, onCreate }) {
-  const [name, setName] = useState('')
+  const [values, setValues] = useState({ name: '', description: '' })
+
   const handleSubmit = (event) => {
     event.preventDefault()
-    onCreate(name)
-    setName('')
+    onCreate(values)
+    setValues({ name: '', description: '' })
     onClose()
   }
 
@@ -25,7 +26,19 @@ export function ProjectModal({ open, onClose, onCreate }) {
       }
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input label="Project name" value={name} onChange={(event) => setName(event.target.value)} required />
+        <Input 
+          label="Project name" 
+          value={values.name} 
+          onChange={(e) => setValues({ ...values, name: e.target.value })} 
+          placeholder="Enter project name"
+          required 
+        />
+        <Input 
+          label="Description" 
+          value={values.description} 
+          onChange={(e) => setValues({ ...values, description: e.target.value })} 
+          placeholder="Describe your project"
+        />
       </form>
     </Dialog>
   )

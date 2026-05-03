@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Button } from '../ui/button'
 import { Dialog } from '../ui/dialog'
 import { Input } from '../ui/input'
+import { Select } from '../ui/select'
 
 const statusOptions = [
   { value: 'todo', label: 'To do' },
@@ -37,54 +38,51 @@ export function TaskModal({ open, onClose, onCreate, projects }) {
       }
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <Input label="Task title" value={values.title} onChange={(e) => setValues({ ...values, title: e.target.value })} required />
-        <Input label="Description" value={values.description} onChange={(e) => setValues({ ...values, description: e.target.value })} />
+        <Input 
+          label="Task title" 
+          value={values.title} 
+          onChange={(e) => setValues({ ...values, title: e.target.value })} 
+          placeholder="Enter task title"
+          required 
+        />
+        <Input 
+          label="Description" 
+          value={values.description} 
+          onChange={(e) => setValues({ ...values, description: e.target.value })} 
+          placeholder="Add task description"
+        />
 
-        <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
-          Project
-          <select
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-            value={values.projectId}
-            onChange={(e) => setValues({ ...values, projectId: e.target.value, assignedTo: '' })}
-            required
-          >
-            <option value="">Select a project</option>
-            {projects.map((project) => (
-              <option key={project._id} value={project._id}>{project.name}</option>
-            ))}
-          </select>
-        </label>
+        <Select
+          label="Project"
+          value={values.projectId}
+          onChange={(e) => setValues({ ...values, projectId: e.target.value, assignedTo: '' })}
+          options={projects.map((project) => ({ value: project._id, label: project.name }))}
+          required
+        />
 
-        <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
-          Assign to
-          <select
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-            value={values.assignedTo}
-            onChange={(e) => setValues({ ...values, assignedTo: e.target.value })}
-            required
-            disabled={!availableMembers.length}
-          >
-            <option value="">Select member</option>
-            {availableMembers.map((member) => (
-              <option key={member._id} value={member._id}>{member.name} ({member.email})</option>
-            ))}
-          </select>
-        </label>
+        <Select
+          label="Assign to"
+          value={values.assignedTo}
+          onChange={(e) => setValues({ ...values, assignedTo: e.target.value })}
+          options={availableMembers.map((member) => ({ value: member._id, label: `${member.name} (${member.email})` }))}
+          required
+          disabled={!availableMembers.length}
+        />
 
         <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Due date" type="date" value={values.dueDate} onChange={(e) => setValues({ ...values, dueDate: e.target.value })} required />
-          <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
-            Status
-            <select
-              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-              value={values.status}
-              onChange={(e) => setValues({ ...values, status: e.target.value })}
-            >
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-          </label>
+          <Input 
+            label="Due date" 
+            type="date" 
+            value={values.dueDate} 
+            onChange={(e) => setValues({ ...values, dueDate: e.target.value })} 
+            required 
+          />
+          <Select
+            label="Status"
+            value={values.status}
+            onChange={(e) => setValues({ ...values, status: e.target.value })}
+            options={statusOptions}
+          />
         </div>
       </form>
     </Dialog>

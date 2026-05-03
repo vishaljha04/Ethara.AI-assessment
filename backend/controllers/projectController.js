@@ -3,13 +3,14 @@ import User from '../models/User.js'
 
 export const createProject = async (req, res, next) => {
   try {
-    const { name } = req.body
+    const { name, description = '' } = req.body
     if (!name) {
       return res.status(400).json({ message: 'Project name is required' })
     }
 
     const project = await Project.create({
       name,
+      description,
       createdBy: req.user.id,
       members: [req.user.id],
     })
@@ -49,6 +50,13 @@ export const addProjectMember = async (req, res, next) => {
     const project = await Project.findById(projectId)
     if (!project) {
       return res.status(404).json({ message: 'Project not found' })
+    }
+
+    const canManageProject =
+      req.user.role === 'admin' &&
+      (project.createdBy.equals(req.user.id) || project.members.some((member) => member.equals(req.user.id)))
+    if (!canManageProject) {
+      return res.status(403).json({ message: 'Not authorized to manage this project' })
     }
 
     const user = await User.findOne({ email })
