@@ -1,0 +1,11 @@
+{
+  "build": {
+    "builder": "heroku/buildpacks:20"
+  },
+  "start": {
+    "command": "node server.js"
+  },
+  "plugins": {
+    "heroku-postgresql": false
+  }
+}
