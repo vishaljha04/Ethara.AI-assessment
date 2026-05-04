@@ -50,6 +50,21 @@ export const AppProvider = ({ children }) => {
     toast.showToast('Project created successfully', 'success')
   }
 
+  const updateProject = async (projectId, patch) => {
+    const response = await API.put(`/projects/${projectId}`, patch)
+    setProjects((prev) => prev.map((project) => (project._id === projectId ? response.data : project)))
+    toast.showToast('Project updated', 'success')
+    fetchActivities()
+  }
+
+  const deleteProject = async (projectId) => {
+    await API.delete(`/projects/${projectId}`)
+    setProjects((prev) => prev.filter((project) => project._id !== projectId))
+    setTasks((prev) => prev.filter((task) => task.projectId?._id !== projectId))
+    toast.showToast('Project deleted', 'success')
+    fetchActivities()
+  }
+
   const addMember = async (projectId, email) => {
     const response = await API.post('/projects/add-member', { projectId, email })
     setProjects((prev) => prev.map((project) => (project._id === projectId ? response.data : project)))
@@ -80,6 +95,13 @@ export const AppProvider = ({ children }) => {
     toast.showToast('Comment added', 'success')
   }
 
+  const deleteTask = async (taskId) => {
+    await API.delete(`/tasks/${taskId}`)
+    setTasks((prev) => prev.filter((task) => task._id !== taskId))
+    fetchActivities()
+    toast.showToast('Task deleted', 'success')
+  }
+
   const stats = useMemo(() => {
     const total = tasks.length
     const completed = tasks.filter((task) => task.status === 'done').length
@@ -101,12 +123,15 @@ export const AppProvider = ({ children }) => {
         fetchData,
         fetchActivities,
         createProject,
+        updateProject,
+        deleteProject,
         addMember,
         createTask,
         updateTask,
         updateTaskStatus,
         updateTaskPriority,
         addTaskComment,
+        deleteTask,
       }}
     >
       {children}

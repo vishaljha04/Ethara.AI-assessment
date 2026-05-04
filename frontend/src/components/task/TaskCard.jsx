@@ -1,8 +1,9 @@
-import { Trash2, Edit2 } from 'lucide-react'
+import { Edit2, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
+import { ActionMenu } from '../ui/action-menu'
 
-export function TaskCard({ task, onStatusChange, onDelete }) {
+export function TaskCard({ task, onStatusChange, onRename, onDelete, isAdmin }) {
   const isOverdue = new Date(task.dueDate) < new Date() && task.status !== 'done'
   const nowTs = new Date().getTime()
   const isNearDeadline = !isOverdue && task.status !== 'done' && (new Date(task.dueDate).getTime() - nowTs) <= 1000 * 60 * 60 * 48
@@ -66,9 +67,27 @@ export function TaskCard({ task, onStatusChange, onDelete }) {
           <Button variant="ghost" size="sm" onClick={() => onStatusChange(task)}>
             <Edit2 size={16} />
           </Button>
-          {onDelete && <Button variant="ghost" size="sm" onClick={() => onDelete(task._id)}>
-            <Trash2 size={16} />
-          </Button>}
+          {isAdmin && (
+            <ActionMenu
+              trigger={({ setOpen, open, menuId }) => (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-haspopup="menu"
+                  aria-expanded={open}
+                  aria-controls={menuId}
+                  onClick={() => setOpen(!open)}
+                  title="Task actions"
+                >
+                  <MoreVertical size={16} />
+                </Button>
+              )}
+              items={[
+                { label: 'Rename', icon: <Pencil size={16} />, onSelect: () => onRename?.(task) },
+                { label: 'Delete', icon: <Trash2 size={16} />, destructive: true, onSelect: () => onDelete?.(task) },
+              ]}
+            />
+          )}
         </div>
       </div>
       <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">

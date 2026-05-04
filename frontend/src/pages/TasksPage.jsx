@@ -7,15 +7,19 @@ import { TaskStatusModal } from '../components/task/TaskStatusModal'
 import { TaskFilters } from '../components/task/TaskFilters'
 import { EmptyState } from '../components/ui/empty-state'
 import { SkeletonCard } from '../components/ui/skeleton'
+import { ConfirmDialog } from '../components/ui/confirm-dialog'
+import { PromptDialog } from '../components/ui/prompt-dialog'
 import { useApp } from '../context/AppContext'
 import { useAuth } from '../context/AuthContext'
 import { Plus, ListTodo } from 'lucide-react'
 
 export function TasksPage() {
-  const { tasks, projects, loading, createTask, updateTaskStatus, updateTaskPriority, addTaskComment } = useApp()
+  const { tasks, projects, loading, createTask, updateTask, updateTaskStatus, updateTaskPriority, addTaskComment, deleteTask } = useApp()
   const { user } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
+  const [renameTaskData, setRenameTaskData] = useState(null)
+  const [deleteTaskData, setDeleteTaskData] = useState(null)
   const [filters, setFilters] = useState({ search: '', status: '', priority: '', projectId: '', assignedTo: '' })
 
   const handleStatusOpen = (task) => {
@@ -73,6 +77,9 @@ export function TasksPage() {
                 key={task._id}
                 task={task}
                 onStatusChange={handleStatusOpen}
+                onRename={(t) => setRenameTaskData(t)}
+                onDelete={(t) => setDeleteTaskData(t)}
+                isAdmin={user?.role === 'admin'}
               />
             ))}
           </div>
@@ -94,6 +101,25 @@ export function TasksPage() {
         onSave={handleSaveStatus}
         onPrioritySave={(priority) => selectedTask && updateTaskPriority(selectedTask._id, priority)}
         onAddComment={addTaskComment}
+      />
+
+      <PromptDialog
+        open={Boolean(renameTaskData)}
+        title="Rename task"
+        label="Task title"
+        initialValue={renameTaskData?.title || ''}
+        placeholder="Enter task title"
+        onClose={() => setRenameTaskData(null)}
+        onSubmit={(title) => updateTask(renameTaskData._id, { title })}
+      />
+
+      <ConfirmDialog
+        open={Boolean(deleteTaskData)}
+        title="Delete task?"
+        description="This will permanently delete the task."
+        confirmText="Delete"
+        onClose={() => setDeleteTaskData(null)}
+        onConfirm={() => deleteTask(deleteTaskData._id)}
       />
     </div>
   )

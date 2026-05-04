@@ -4,7 +4,7 @@ const activitySchema = new mongoose.Schema(
   {
     action: {
       type: String,
-      enum: ['TASK_CREATED', 'TASK_UPDATED', 'TASK_COMPLETED', 'MEMBER_ADDED'],
+      enum: ['TASK_CREATED', 'TASK_UPDATED', 'TASK_COMPLETED', 'TASK_DELETED', 'MEMBER_ADDED', 'PROJECT_UPDATED', 'PROJECT_DELETED'],
       required: true,
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

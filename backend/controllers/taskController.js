@@ -74,10 +74,9 @@ export const getTasks = async (req, res, next) => {
 export const updateTask = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { status, priority } = req.body
-    if (!status && !priority) {
-      return res.status(400).json({ message: 'Status or priority is required' })
-    }
+    const { status, priority, title, description, dueDate, assignedTo } = req.body
+    const hasAnyPatch = [status, priority, title, description, dueDate, assignedTo].some((v) => v !== undefined)
+    if (!hasAnyPatch) return res.status(400).json({ message: 'Nothing to update' })
 
     const task = await Task.findById(id)
     if (!task) {
@@ -95,8 +94,23 @@ export const updateTask = async (req, res, next) => {
     }
 
     const prevStatus = task.status
-    if (status) task.status = status
-    if (priority) task.priority = priority
+
+    if (status !== undefined) task.status = status
+    if (priority !== undefined) task.priority = priority
+
+    if (req.user.role === 'admin') {
+      if (title !== undefined) task.title = String(title).trim()
+      if (description !== undefined) task.description = String(description).trim()
+      if (dueDate !== undefined) task.dueDate = dueDate
+      if (assignedTo !== undefined) {
+        const assigneeIsMember = project.members.some((member) => member.equals(assignedTo))
+        if (!assigneeIsMember) {
+          return res.status(400).json({ message: 'Assignee must belong to the project' })
+        }
+        task.assignedTo = assignedTo
+      }
+    }
+
     await task.save()
 
     const updated = await Task.findById(id)
@@ -113,6 +127,38 @@ export const updateTask = async (req, res, next) => {
     })
 
     res.json(updated)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteTask = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    const task = await Task.findById(id)
+    if (!task) return res.status(404).json({ message: 'Task not found' })
+
+    const project = await Project.findById(task.projectId).select('members')
+    if (!project || !project.members.some((member) => member.equals(req.user.id))) {
+      return res.status(403).json({ message: 'Not authorized to access this task' })
+    }
+
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized to delete this task' })
+    }
+
+    await Task.deleteOne({ _id: task._id })
+
+    await Activity.create({
+      action: 'TASK_DELETED',
+      userId: req.user.id,
+      projectId: task.projectId,
+      taskId: task._id,
+      message: `Task â€œ${task.title}â€ was deleted.`,
+    })
+
+    res.status(204).send()
   } catch (error) {
     next(error)
   }

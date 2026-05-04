@@ -5,15 +5,19 @@ import { ProjectModal } from '../components/project/ProjectModal'
 import { AddMemberModal } from '../components/project/AddMemberModal'
 import { EmptyState } from '../components/ui/empty-state'
 import { SkeletonCard } from '../components/ui/skeleton'
+import { ConfirmDialog } from '../components/ui/confirm-dialog'
+import { PromptDialog } from '../components/ui/prompt-dialog'
 import { useApp } from '../context/AppContext'
 import { useAuth } from '../context/AuthContext'
 import { FolderPlus } from 'lucide-react'
 
 export function ProjectsPage() {
-  const { projects, tasks, loading, createProject, addMember } = useApp()
+  const { projects, tasks, loading, createProject, addMember, updateProject, deleteProject } = useApp()
   const { user } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [memberProjectId, setMemberProjectId] = useState(null)
+  const [renameProjectData, setRenameProjectData] = useState(null)
+  const [deleteProjectData, setDeleteProjectData] = useState(null)
 
   return (
     <div className="space-y-8">
@@ -46,6 +50,8 @@ export function ProjectsPage() {
               project={project}
               taskCount={tasks.filter((t) => t.projectId?._id === project._id).length}
               onAddMember={(projectId) => setMemberProjectId(projectId)}
+              onRename={(p) => setRenameProjectData(p)}
+              onDelete={(p) => setDeleteProjectData(p)}
               isAdmin={user?.role === 'admin'}
             />
           ))}
@@ -65,6 +71,25 @@ export function ProjectsPage() {
         onClose={() => setMemberProjectId(null)}
         onAdd={addMember}
         projectId={memberProjectId}
+      />
+
+      <PromptDialog
+        open={Boolean(renameProjectData)}
+        title="Rename project"
+        label="Project name"
+        initialValue={renameProjectData?.name || ''}
+        placeholder="Enter project name"
+        onClose={() => setRenameProjectData(null)}
+        onSubmit={(name) => updateProject(renameProjectData._id, { name })}
+      />
+
+      <ConfirmDialog
+        open={Boolean(deleteProjectData)}
+        title="Delete project?"
+        description="This will permanently delete the project and all its tasks."
+        confirmText="Delete"
+        onClose={() => setDeleteProjectData(null)}
+        onConfirm={() => deleteProject(deleteProjectData._id)}
       />
     </div>
   )
